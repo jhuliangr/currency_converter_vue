@@ -1,4 +1,4 @@
-# segunda
+# Currency Converter
 
 ## Project setup
 ```
@@ -14,6 +14,6 @@ yarn serve
 ```
 yarn build
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### For testing it you must create an account on the following 2 APIs
+https://exchangeratesapi.io/ and https://freecurrencyapi.com/ Put your API keys into a .env file
+, if you are not sure how to do it, check the .env.example file
