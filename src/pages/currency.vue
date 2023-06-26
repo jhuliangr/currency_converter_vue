@@ -29,7 +29,7 @@
                     </small>
                 </div>
                 <h4 class="mb-5" id="res">{{ res }}</h4>
-                <button class="btn btn-dark mb-3 px-5 py-3 shadow-lg" @click="convertCurrencies()">Convertir</button>
+                <button :disabled="disabled()" class="btn btn-dark mb-3 px-5 py-3 shadow-lg" @click="convertCurrencies()">Convertir</button>
             </div>
             <div class="col"></div>
             </div>
@@ -112,10 +112,14 @@ export default {
             return
         }
         },
+        disabled(){
+            return this.to == "" || this.from == ""
+        }
     },
     async mounted() {
         this.fetchData()
     },
+    
 }
 </script>
 
