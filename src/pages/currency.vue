@@ -28,8 +28,8 @@
                         The amount you want to check
                     </small>
                 </div>
-                <h4 class="mb-5" id="res">{{ res }}</h4>
-                <button :disabled="disabled()" class="btn btn-dark mb-3 px-5 py-3 shadow-lg" @click="convertCurrencies()">Convertir</button>
+                <h4 class="mb-5" id="res">{{ loading? "Converting..." : res }}</h4>
+                <button :disabled="disabled()" class="btn btn-dark mb-3 px-5 py-3 shadow-lg" @click="convertCurrencies()">{{loading?"Converting": "Convert"}}</button>
             </div>
             <div class="col"></div>
             </div>
@@ -50,11 +50,12 @@ export default {
     },
     data() {
         return {
-        currencies: {},
-        amount: 1,
-        from: "",
-        to: "",
-        res: 0
+            currencies: {},
+            amount: 1,
+            from: "",
+            to: "",
+            res: 0,
+            loading: false
         }
     },
     methods: {
@@ -66,7 +67,6 @@ export default {
         }
         fetch(`https://api.freecurrencyapi.com/v1/currencies?apikey=${process.env.VUE_APP_ACCESS_KEY_CURRENCIES}`)
             .then(async (res) => {
-                
                 const resp = await res.json()
                 this.currencies = resp.data
                 localStorage.setItem("currencies", JSON.stringify(this.currencies))
@@ -75,10 +75,12 @@ export default {
         },
         convertCurrencies() {
         if (this.from !== "" && this.to !== "") {
+            this.loading = true
             fetch(`http://api.exchangeratesapi.io/v1/latest?access_key=${process.env.VUE_APP_ACCESS_KEY_EXCHANGE}`)
             .then((res) =>
                 res.json()
                 .then((response) => {
+                    this.loading = false
                     const obj = response.rates
                     const keys = Object.keys(obj)
                     const values = Object.values(obj)
@@ -92,6 +94,8 @@ export default {
                     })
                 })
                 .catch((err) =>{
+                    
+                    this.loading = false
                     toast.error('The API exchangeratesapi.io has bocked your country, please, use a VPN and try again',{
                         autoClose: 2000,
                         position: 'top-center',
@@ -101,7 +105,10 @@ export default {
                     console.log(err)
                 })
             )
-            .catch((err) => console.log('este es: ',err))
+            .catch((err) => {
+                    this.loading = false
+                    console.log(err)
+                })
         } else {
             
             toast.error('Please, select the currencies you want to be converted', {
