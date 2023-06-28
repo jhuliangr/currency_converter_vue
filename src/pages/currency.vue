@@ -20,25 +20,26 @@
                         </option>
                     </select>
                     </div>
-                <hr >
+                <hr/>
                 <div class="mb-3">
-                    <label for="" class="form-label">Amount</label>
-                    <input type="text" class="form-control" name="amount" id="" aria-describedby="helpId" placeholder="Amount" v-model="amount"/>
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="text" class="form-control" name="amount" id="amount" aria-describedby="helpId" placeholder="Amount" v-model="amount"/>
                     <small id="helpId" class="form-text text-muted">
                         The amount you want to check
                     </small>
                 </div>
                 <h4 class="mb-5" id="res">{{ loading? "Converting..." : res }}</h4>
-                <button :disabled="disabled()" class="btn btn-dark mb-3 px-5 py-3 shadow-lg" @click="convertCurrencies()">{{loading?"Converting": "Convert"}}</button>
+                <Button :title="loading?'Converting': 'Convert'" :disable="disabled" :convert="convertCurrencies" @click-state-changed="click_state()"/>            
             </div>
             <div class="col"></div>
-            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
+import Button from '@/components/button'
 export default {
     setup(){
         toast('Welcome', {
@@ -55,7 +56,8 @@ export default {
             from: "",
             to: "",
             res: 0,
-            loading: false
+            loading: false,
+            condition: false
         }
     },
     methods: {
@@ -74,7 +76,7 @@ export default {
             .catch((err) => console.log(err))
         },
         convertCurrencies() {
-        if (this.from !== "" && this.to !== "") {
+        if (!this.disabled()) {
             this.loading = true
             fetch(`http://api.exchangeratesapi.io/v1/latest?access_key=${process.env.VUE_APP_ACCESS_KEY_EXCHANGE}`)
             .then((res) =>
@@ -110,7 +112,6 @@ export default {
                     console.log(err)
                 })
         } else {
-            
             toast.error('Please, select the currencies you want to be converted', {
                 position: 'top-center',
                 closeButton: false,
@@ -120,12 +121,20 @@ export default {
         }
         },
         disabled(){
-            return this.to == "" || this.from == ""
+            return this.condition || (this.to == "" || this.from == "")
+        },
+        click_state(){
+            this.condition = !this.condition
+            console.log('->', this.condition)
         }
+
     },
-    async mounted() {
+    mounted() {
         this.fetchData()
     },
+    components:{
+        Button
+    }
     
 }
 </script>
