@@ -33,12 +33,20 @@ export default {
         reiniciarClick(){
             setTimeout(() => {
                 this.clicked = false 
-            }, 2000);
+            }, 4000);
         }
     },
     watch:{
-        clicked(oldVal, newVal){
-            this.$emit('click-state-changed')
+        clicked(oldVal, _){
+            const Obj = () =>{
+                if(oldVal){
+                    return 'Button locked'
+                }
+                else{
+                    return 'Button unlocked'
+                }
+            }
+            this.$emit('click-state-changed', Obj)
             this.reiniciarClick()
         }
     }

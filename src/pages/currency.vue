@@ -1,5 +1,5 @@
 <template>
-    <div class="container shadow-lg" id="contenedor">
+    <div class="container shadow-lg " id="contenedor">
         <div class="row">
             <div class="col"></div>
             <div class="col">
@@ -29,7 +29,7 @@
                     </small>
                 </div>
                 <h4 class="mb-5" id="res">{{ loading? "Converting..." : res }}</h4>
-                <Button :title="loading?'Converting': 'Convert'" :disable="disabled" :convert="convertCurrencies" @click-state-changed="click_state()"/>            
+                <Button :title="loading?'Converting': 'Convert'" :disable="disabled" :convert="convertCurrencies" @click-state-changed="click_state"/>            
             </div>
             <div class="col"></div>
         </div>
@@ -123,9 +123,9 @@ export default {
         disabled(){
             return this.condition || (this.to == "" || this.from == "")
         },
-        click_state(){
+        click_state(Obj){
+            console.log(Obj())
             this.condition = !this.condition
-            console.log('->', this.condition)
         }
 
     },
@@ -139,7 +139,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #contenedor {
   background-color: rgba(36, 211, 74, 0.681);
   border-radius: 8vw;
